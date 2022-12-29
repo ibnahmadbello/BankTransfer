@@ -11,27 +11,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import com.arab.banktransfer.entities.ValidateAccount;
 
 @RestController
-//@ResponseBody
 public class ValidateAccountNumberController {
-	
+
 	@PostMapping(value = "/api/v1/core-banking/validateBankAccount")
 	public Object validateAccountNumber(@RequestBody ValidateAccount account) {
 		return verifyFromPayStack(account.getAccount_number(), account.getAccount_bank());
 	}
 
 	private Object verifyFromFlutterwave(ValidateAccount account) {
-		String fToken = "FLWSECK_TEST-148a0343827f5276c49b73fa2e9b8884-X";		
-		
+		String fToken = "FLWSECK_TEST-148a0343827f5276c49b73fa2e9b8884-X";
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 		headers.add("Authorization", "Bearer " + fToken);
@@ -42,28 +37,28 @@ public class ValidateAccountNumberController {
 
 		return response.getBody();
 	}
-	
+
 	@PostMapping(value = "/api/v1/core-banking/validateBankAccount/{provider}")
-	public Object validateAccountNumber(@PathVariable("provider") String provider, @RequestBody ValidateAccount account) {
+	public Object validateAccountNumber(@PathVariable("provider") String provider,
+			@RequestBody ValidateAccount account) {
 		switch (provider) {
 		case "paystack":
 			return verifyFromPayStack(account.getAccount_number(), account.getAccount_bank());
 		case "flutter":
-			return verifyFromFlutterwave(account);			
+			return verifyFromFlutterwave(account);
 		default:
 			return verifyFromPayStack(account.getAccount_number(), account.getAccount_bank());
 		}
 	}
-	
-	
+
 	@GetMapping(value = "/api/v1/core-banking/validateBankAccount")
 	public Object verifyFromPayStack(String accountNumber, String accountBank) {
 		String pToken = "sk_test_a14bf34a2f73ce858166189496b164990c8f4e84";
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 		headers.add("Authorization", "Bearer " + pToken);
-		String uri = "https://api.paystack.co/bank/resolve?account_number="+
-		accountNumber+"&bank_code="+accountBank;
+		String uri = "https://api.paystack.co/bank/resolve?account_number=" + accountNumber + "&bank_code="
+				+ accountBank;
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<Object> response = restTemplate.exchange(uri, HttpMethod.GET,
 				new HttpEntity<>("parameters", headers), Object.class);
