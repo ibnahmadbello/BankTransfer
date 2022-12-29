@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
-public class TransferController {
+public class ListBankController {
 
 	@GetMapping(value = "/api/v1/core-banking/banks/", produces = "application/json")
 	public Object getBankList() {
