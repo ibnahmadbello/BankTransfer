@@ -1,6 +1,5 @@
 package com.arab.banktransfer.controllers;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.UUID;
 
@@ -16,15 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import com.arab.banktransfer.entities.BankTransfer;
-import com.arab.banktransfer.entities.Data;
 import com.arab.banktransfer.entities.InitiateTransfer;
 import com.arab.banktransfer.entities.PayStackTransfer;
 import com.arab.banktransfer.entities.PayStackTransferBody;
 import com.arab.banktransfer.entities.TransferRecipient;
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @EnableAutoConfiguration
 @RestController
@@ -72,7 +66,7 @@ public class TransferController {
 	}
 	
 	@PostMapping("/api/v1/core-banking/bankTransfer/paystack")
-	public Object transferViaPayStack(@RequestBody PayStackTransferBody body) throws JacksonException, IOException {
+	public Object transferViaPayStack(@RequestBody PayStackTransferBody body) {
 		PayStackTransfer payStackTransfer = body.getStackTransfer();
 		
 		TransferRecipient transferRecipient = body.getRecipient();
