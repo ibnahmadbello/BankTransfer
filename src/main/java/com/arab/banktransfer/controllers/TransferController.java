@@ -25,13 +25,13 @@ import com.arab.banktransfer.entities.TransferRecipient;
 public class TransferController {
 	
 	@PostMapping("/api/v1/core-banking/bankTransfer")
-	public Object bankTransfer(@RequestBody BankTransfer bankTransfer) {
+	public String bankTransfer(@RequestBody BankTransfer bankTransfer) {
 		return transferViaFlutter(bankTransfer);
 	}
 	
 
 	@PostMapping("/api/v1/core-banking/bankTransfer/flutter")
-	private Object transferViaFlutter(BankTransfer bankTransfer) {
+	private String transferViaFlutter(BankTransfer bankTransfer) {
 		String fToken = "FLWSECK_TEST-148a0343827f5276c49b73fa2e9b8884-X";
 
 		HttpHeaders headers = new HttpHeaders();
@@ -39,8 +39,8 @@ public class TransferController {
 		headers.add("Authorization", "Bearer " + fToken);
 		String uri = "https://api.flutterwave.com/v3/transfers";
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<Object> response = restTemplate.exchange(uri, HttpMethod.POST,
-				new HttpEntity<>(bankTransfer, headers), Object.class);
+		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST,
+				new HttpEntity<>(bankTransfer, headers), String.class);
 
 		return response.getBody().toString();
 	}
@@ -53,8 +53,8 @@ public class TransferController {
 		headers.add("Authorization", "Bearer " + pToken);
 		String uri = "https://api.paystack.co/transferrecipient";
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<Object> response = restTemplate.exchange(uri, HttpMethod.POST,
-				new HttpEntity<>(recipient, headers), Object.class);
+		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST,
+				new HttpEntity<>(recipient, headers), String.class);
 
 		return response.getBody().toString();
 	}
@@ -66,7 +66,7 @@ public class TransferController {
 	}
 	
 	@PostMapping("/api/v1/core-banking/bankTransfer/paystack")
-	public Object transferViaPayStack(@RequestBody PayStackTransferBody body) {
+	public String transferViaPayStack(@RequestBody PayStackTransferBody body) {
 		PayStackTransfer payStackTransfer = body.getStackTransfer();
 		
 		TransferRecipient transferRecipient = body.getRecipient();
@@ -84,10 +84,10 @@ public class TransferController {
 		headers.add("Authorization", "Bearer " + pToken);
 		String uri = "https://api.paystack.co/transfer";
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<Object> response = restTemplate.exchange(uri, HttpMethod.POST,
-				new HttpEntity<>(transfer, headers), Object.class);
+		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST,
+				new HttpEntity<>(transfer, headers), String.class);
 
-		return response.getBody();
+		return response.getBody().toString();
 	}
 
 }

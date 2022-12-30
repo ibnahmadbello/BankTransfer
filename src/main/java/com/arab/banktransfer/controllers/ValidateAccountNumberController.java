@@ -20,11 +20,11 @@ import com.arab.banktransfer.entities.ValidateAccount;
 public class ValidateAccountNumberController {
 
 	@PostMapping(value = "/api/v1/core-banking/validateBankAccount")
-	public Object validateAccountNumber(@RequestBody ValidateAccount account) {
+	public String validateAccountNumber(@RequestBody ValidateAccount account) {
 		return verifyFromPayStack(account.getAccount_number(), account.getAccount_bank());
 	}
 
-	private Object verifyFromFlutterwave(ValidateAccount account) {
+	private String verifyFromFlutterwave(ValidateAccount account) {
 		String fToken = "FLWSECK_TEST-148a0343827f5276c49b73fa2e9b8884-X";
 
 		HttpHeaders headers = new HttpHeaders();
@@ -32,10 +32,10 @@ public class ValidateAccountNumberController {
 		headers.add("Authorization", "Bearer " + fToken);
 		String uri = "https://api.flutterwave.com/v3/accounts/resolve";
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<Object> response = restTemplate.exchange(uri, HttpMethod.POST,
-				new HttpEntity<>(account, headers), Object.class);
+		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST,
+				new HttpEntity<>(account, headers), String.class);
 
-		return response.getBody();
+		return response.getBody().toString();
 	}
 
 	@PostMapping(value = "/api/v1/core-banking/validateBankAccount/{provider}")
@@ -52,7 +52,7 @@ public class ValidateAccountNumberController {
 	}
 
 	@GetMapping(value = "/api/v1/core-banking/validateBankAccount")
-	public Object verifyFromPayStack(String accountNumber, String accountBank) {
+	public String verifyFromPayStack(String accountNumber, String accountBank) {
 		String pToken = "sk_test_a14bf34a2f73ce858166189496b164990c8f4e84";
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -60,10 +60,10 @@ public class ValidateAccountNumberController {
 		String uri = "https://api.paystack.co/bank/resolve?account_number=" + accountNumber + "&bank_code="
 				+ accountBank;
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<Object> response = restTemplate.exchange(uri, HttpMethod.GET,
-				new HttpEntity<>("parameters", headers), Object.class);
+		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET,
+				new HttpEntity<>("parameters", headers), String.class);
 
-		return response.getBody();
+		return response.getBody().toString();
 	}
 
 }

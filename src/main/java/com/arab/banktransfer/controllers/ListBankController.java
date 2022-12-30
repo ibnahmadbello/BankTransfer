@@ -16,12 +16,12 @@ import org.springframework.web.client.RestTemplate;
 public class ListBankController {
 
 	@GetMapping(value = "/api/v1/core-banking/banks/", produces = "application/json")
-	public Object getBankList() {
+	public String getBankList() {
 		return callFlutterwave();
 	}
 
 	@GetMapping(value = "/api/v1/core-banking/banks/{provider}", produces = "application/json")
-	public Object getBankList(@PathVariable(name = "provider", required = false) String provider) {	
+	public String getBankList(@PathVariable(name = "provider", required = false) String provider) {	
 		switch (provider) {
 		case "paystack":
 			return callPayStack();
@@ -32,7 +32,7 @@ public class ListBankController {
 		}
 	}
 
-	private Object callPayStack() {
+	private String callPayStack() {
 		String pToken = "sk_test_a14bf34a2f73ce858166189496b164990c8f4e84";
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -40,13 +40,13 @@ public class ListBankController {
 		String uri = "https://api.paystack.co/bank/";
 		RestTemplate restTemplate = new RestTemplate();
 
-		ResponseEntity<Object> response = restTemplate.exchange(uri, HttpMethod.GET,
-				new HttpEntity<>("parameters", headers), Object.class);
+		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET,
+				new HttpEntity<>("parameters", headers), String.class);
 
-		return response.getBody();
+		return response.getBody().toString();
 	}
 
-	private Object callFlutterwave() {
+	private String callFlutterwave() {
 		String fToken = "FLWSECK_TEST-148a0343827f5276c49b73fa2e9b8884-X";
 		HttpHeaders headers = new HttpHeaders();
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -54,10 +54,10 @@ public class ListBankController {
 		String uri = "https://api.flutterwave.com/v3/banks/NG";
 		RestTemplate restTemplate = new RestTemplate();
 
-		ResponseEntity<Object> response = restTemplate.exchange(uri, HttpMethod.GET,
-				new HttpEntity<>("parameters", headers), Object.class);
+		ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET,
+				new HttpEntity<>("parameters", headers), String.class);
 
-		return response.getBody();
+		return response.getBody().toString();
 	}
 
 }
